@@ -1,0 +1,26 @@
+# Rust
+/rust/target/
+**/*.rs.bk
+Cargo.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+*.whl
+
+# Flet
+storage/
+assets/.flet/
+
+# Outputs (GUI/CLI reconstructions)
+*.shardset.png
+*.shardset.svg
+
+# OS
+Thumbs.db
+.DS_Store
