@@ -69,13 +69,18 @@ def main(page: ft.Page):
         options=[ft.DropdownOption(key=k, text=t) for k, t in MODES],
         width=220,
     )
-    count_slider = ft.Slider(min=1, max=1000, divisions=999, value=100,
-                             label="{value}", expand=True, active_color=ACCENT)
-    count_label = ft.Text("Shards: 100", width=120)
+    count_field = ft.TextField(label="Shards (any number)", value="100", width=180, dense=True)
+
+    def shard_count():
+        try:
+            n = int(count_field.value or "100")
+        except ValueError:
+            n = 100
+        return max(1, n)
     alpha_slider = ft.Slider(min=0, max=255, divisions=255, value=128,
                              label="{value}", expand=True, active_color=ACCENT)
     alpha_label = ft.Text("Alpha: 128 ", width=120)
-    size_field = ft.TextField(label="Input size", value="256", width=110, dense=True)
+    size_field = ft.TextField(label="Input size (0=original)", value="0", width=160, dense=True)
     repeat_field = ft.TextField(label="Repeat", value="0", width=90, dense=True)
     workers_field = ft.TextField(label="Workers (0=all)", value="0", width=130, dense=True)
     animate_sw = ft.Switch(label="Watch it build", value=True, active_color=ACCENT)
@@ -150,9 +155,9 @@ def main(page: ft.Page):
             page.update()
             return
         try:
-            size = int(size_field.value or "256")
+            size = int(size_field.value or "0")
         except ValueError:
-            size = 256
+            size = 0
         img = Image.open(path).convert("RGBA")
         if size > 0:
             img.thumbnail((size, size), Image.LANCZOS)
@@ -167,7 +172,7 @@ def main(page: ft.Page):
         save_png_btn.disabled = True
         save_svg_btn.disabled = True
         count_big.value = "0"
-        count_total.value = f"/ {int(count_slider.value)} shards"
+        count_total.value = f"/ {shard_count()} shards"
         progress.value = 0
         pct_text.value = "0%"
         score_metric.value = time_metric.value = speed_metric.value = "-"
@@ -200,7 +205,7 @@ def main(page: ft.Page):
             repeat = 0
         mode = int(mode_dd.value)
         alpha = int(alpha_slider.value)
-        total = int(count_slider.value)
+        total = shard_count()
         animate = animate_sw.value
 
         model = pe.Model(w, h, state["rgba"], None, workers or None)
@@ -295,9 +300,7 @@ def main(page: ft.Page):
 
     # ---- Wiring ---------------------------------------------------------
     def on_count_change(e):
-        n = int(count_slider.value)
-        count_label.value = f"Shards: {n}"
-        count_total.value = f"/ {n} shards"
+        count_total.value = f"/ {shard_count()} shards"
         page.update()
 
     def on_alpha_change(e):
@@ -305,7 +308,7 @@ def main(page: ft.Page):
         alpha_label.value = f"Alpha: {v}{' (auto)' if v == 0 else ''}"
         page.update()
 
-    count_slider.on_change = on_count_change
+    count_field.on_change = on_count_change
     alpha_slider.on_change = on_alpha_change
     run_btn.on_click = on_run
     stop_btn.on_click = on_stop
@@ -327,7 +330,7 @@ def main(page: ft.Page):
             ft.Row([browse_btn, load_btn, size_field]),
             ft.Divider(),
             mode_dd,
-            count_label, count_slider,
+            count_field,
             alpha_label, alpha_slider,
             ft.Row([repeat_field, workers_field]),
             animate_sw,

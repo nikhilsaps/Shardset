@@ -52,7 +52,7 @@ def main(argv=None):
                    help="0=combo 1=triangle 2=rect 3=ellipse 4=circle "
                         "5=rotatedrect 6=bezier 7=rotatedellipse 8=polygon")
     p.add_argument("-a", "--alpha", type=int, default=128, help="alpha (0 = auto)")
-    p.add_argument("-r", "--input-size", type=int, default=256, help="resize input to this")
+    p.add_argument("-r", "--input-size", type=int, default=0, help="resize longest side to this; 0 (default) keeps original size")
     p.add_argument("-rep", "--repeat", type=int, default=0, help="extra refined shapes per step")
     p.add_argument("-j", "--workers", type=int, default=0, help="worker threads (0 = all cores)")
     p.add_argument("-bg", "--background", default=None, help="background hex color")
