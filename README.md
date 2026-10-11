@@ -66,7 +66,7 @@ environment.
 python python/gui.py
 ```
 
-Load an image, pick a shape and a shard count, hit **Run**, and watch it build.
+Load an image, pick a shape and any number of shards (no upper limit), hit **Run**, and watch it build.
 Save the result as PNG or SVG.
 
 ### CLI
@@ -82,7 +82,7 @@ python python/cli.py -i input.jpg -o out.png -o out.svg -n 200 -m 1
 | `-n` | number of shards | required |
 | `-m` | shape mode (see below) | 1 |
 | `-a` | alpha 0-255 (0 = auto) | 128 |
-| `-r` | resize input to this many px on the long edge | 256 |
+| `-r` | resize input to this many px on the long edge (`0` = keep original) | 0 |
 | `-rep` | extra refined shards per step | 0 |
 | `-j` | worker threads (0 = all cores) | 0 |
 | `-bg` | background hex color | auto |
